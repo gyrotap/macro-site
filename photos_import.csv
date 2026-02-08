@@ -1,0 +1,21 @@
+id,title,description,image_url,category,sort_order,featured,created_at,updated_at
+1,Dewdrop on Spider Web,A perfect sphere of water clinging to delicate silk threads at sunrise,https://images.unsplash.com/photo-1578775887804-699de7086ff9,Nature,1,true,2024-01-01T10:00:00Z,2024-01-01T10:00:00Z
+2,Butterfly Wing Detail,Intricate scales creating vibrant patterns on a monarch butterfly wing,https://images.unsplash.com/photo-1526336024174-e58f5cdd8e13,Insects,2,true,2024-01-02T10:00:00Z,2024-01-02T10:00:00Z
+3,Honeybee on Lavender,A busy honeybee covered in golden pollen collecting nectar,https://images.unsplash.com/photo-1558618666-fcd25c85cd64,Insects,3,true,2024-01-03T10:00:00Z,2024-01-03T10:00:00Z
+4,Frost Crystal Formation,Delicate ice crystals forming geometric patterns on a winter morning,https://images.unsplash.com/photo-1483728642387-6c3bdd6c93e5,Nature,4,false,2024-01-04T10:00:00Z,2024-01-04T10:00:00Z
+5,Mushroom Gills,Radiating gills beneath a small forest mushroom cap,https://images.unsplash.com/photo-1459411552884-841db9b3cc2a,Nature,5,true,2024-01-05T10:00:00Z,2024-01-05T10:00:00Z
+6,Water Droplet Reflection,A water droplet acting as a tiny lens reflecting the world upside down,https://images.unsplash.com/photo-1515694346937-94d85e41e6f0,Abstract,6,true,2024-01-06T10:00:00Z,2024-01-06T10:00:00Z
+7,Ladybug on Green Leaf,A seven-spotted ladybug perched on fresh spring foliage,https://images.unsplash.com/photo-1559827260-dc66d52bef19,Insects,7,false,2024-01-07T10:00:00Z,2024-01-07T10:00:00Z
+8,Snowflake Close-Up,Individual ice crystal branches in stunning six-fold symmetry,https://images.unsplash.com/photo-1477346611705-65d1883cee1e,Nature,8,false,2024-01-08T10:00:00Z,2024-01-08T10:00:00Z
+9,Rose Petal Texture,Velvety surface and delicate veins of a crimson rose petal,https://images.unsplash.com/photo-1518709268805-4e9042af9f23,Flowers,9,true,2024-01-09T10:00:00Z,2024-01-09T10:00:00Z
+10,Dragonfly Eye,Thousands of individual ommatidia creating a compound eye mosaic,https://images.unsplash.com/photo-1502780402662-acc01cb25cca,Insects,10,false,2024-01-10T10:00:00Z,2024-01-10T10:00:00Z
+11,Feather Barbs,Microscopic interlocking barbules creating a smooth feather surface,https://images.unsplash.com/photo-1535083783855-76ae62b2914e,Abstract,11,false,2024-01-11T10:00:00Z,2024-01-11T10:00:00Z
+12,Moss Sporophytes,Tiny spore capsules rising from emerald moss carpet,https://images.unsplash.com/photo-1518531933037-91b2f5f229cc,Nature,12,false,2024-01-12T10:00:00Z,2024-01-12T10:00:00Z
+13,Succulent Geometry,Spiral arrangement of fleshy leaves in perfect mathematical order,https://images.unsplash.com/photo-1509937528035-ad76254b0356,Flowers,13,true,2024-01-13T10:00:00Z,2024-01-13T10:00:00Z
+14,Spider Silk Anchor,Attachment point where spider silk meets tree bark,https://images.unsplash.com/photo-1491555103944-7c647fd857e6,Nature,14,false,2024-01-14T10:00:00Z,2024-01-14T10:00:00Z
+15,Pollen Grain Detail,Microscopic pollen grains showing intricate surface textures,https://images.unsplash.com/photo-1490750967868-88aa4486c946,Abstract,15,false,2024-01-15T10:00:00Z,2024-01-15T10:00:00Z
+16,Dandelion Seed,A single parachute seed ready to drift on the wind,https://images.unsplash.com/photo-1463936575829-25148e1db1b8,Nature,16,true,2024-01-16T10:00:00Z,2024-01-16T10:00:00Z
+17,Ant Carrying Leaf,Leafcutter ant demonstrating incredible strength with a cargo,https://images.unsplash.com/photo-1516214104703-d870798883c5,Insects,17,false,2024-01-17T10:00:00Z,2024-01-17T10:00:00Z
+18,Bubble Surface,Rainbow iridescence dancing across a soap bubble membrane,https://images.unsplash.com/photo-1544306094-e2dcf9479da3,Abstract,18,false,2024-01-18T10:00:00Z,2024-01-18T10:00:00Z
+19,Orchid Center,The delicate column and lip of an exotic orchid bloom,https://images.unsplash.com/photo-1490750967868-88aa4486c946,Flowers,19,true,2024-01-19T10:00:00Z,2024-01-19T10:00:00Z
+20,Lichen Landscape,A miniature world of symbiotic organisms on ancient stone,https://images.unsplash.com/photo-1518709268805-4e9042af9f23,Nature,20,false,2024-01-20T10:00:00Z,2024-01-20T10:00:00Z
