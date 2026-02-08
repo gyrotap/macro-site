@@ -8,6 +8,7 @@ import PageNotFound from './lib/PageNotFound';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 import ErrorBoundary from '@/components/ErrorBoundary';
+import { Analytics } from "@vercel/analytics/react";
 
 const { Pages, Layout, mainPage } = pagesConfig;
 const mainPageKey = mainPage ?? Object.keys(Pages)[0];
@@ -76,6 +77,7 @@ function App() {
             <AuthenticatedApp />
           </Router>
           <Toaster />
+          <Analytics />
         </QueryClientProvider>
       </AuthProvider>
     </ErrorBoundary>
