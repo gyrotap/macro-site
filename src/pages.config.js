@@ -50,6 +50,7 @@
 import Home from './pages/Home';
 import Gallery from './pages/Gallery';
 import About from './pages/About';
+import VercelAnalytics from './pages/VercelAnalytics';
 import __Layout from './Layout.jsx';
 
 
@@ -57,6 +58,7 @@ export const PAGES = {
     "Home": Home,
     "Gallery": Gallery,
     "About": About,
+    "VercelAnalytics": VercelAnalytics,
 }
 
 export const pagesConfig = {
