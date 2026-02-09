@@ -50,6 +50,8 @@
 import Home from './pages/Home';
 import Gallery from './pages/Gallery';
 import About from './pages/About';
+import Admin from './pages/Admin';
+import Login from './pages/Login';
 import __Layout from './Layout.jsx';
 
 
@@ -57,6 +59,8 @@ export const PAGES = {
     "Home": Home,
     "Gallery": Gallery,
     "About": About,
+    "Admin": Admin,
+    "Login": Login,
 }
 
 export const pagesConfig = {

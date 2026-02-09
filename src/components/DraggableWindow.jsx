@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 
 export default function DraggableWindow({
   children,
@@ -7,9 +7,23 @@ export default function DraggableWindow({
 }) {
   const [position, setPosition] = useState(defaultPosition);
   const [isDragging, setIsDragging] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const dragStart = useRef({ x: 0, y: 0 });
 
+  // Detect if mobile on mount
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
   const handleMouseDown = (e) => {
+    // Disable dragging on mobile
+    if (isMobile) return;
+
     // Only allow dragging from the title bar
     if (e.target.closest('.window-titlebar')) {
       setIsDragging(true);
@@ -34,7 +48,7 @@ export default function DraggableWindow({
   };
 
   // Attach global mouse move and up listeners when dragging
-  React.useEffect(() => {
+  useEffect(() => {
     if (isDragging) {
       window.addEventListener('mousemove', handleMouseMove);
       window.addEventListener('mouseup', handleMouseUp);
@@ -50,7 +64,7 @@ export default function DraggableWindow({
       className={`${className}`}
       style={{
         position: 'relative',
-        transform: `translate(${position.x}px, ${position.y}px)`,
+        transform: isMobile ? 'none' : `translate(${position.x}px, ${position.y}px)`,
         cursor: isDragging ? 'grabbing' : 'default',
         transition: isDragging ? 'none' : 'transform 0.1s ease-out'
       }}

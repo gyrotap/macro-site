@@ -9,81 +9,39 @@ export default function Layout({ children, currentPageName }) {
     { label: "Home", page: "Home" },
     { label: "Gallery", page: "Gallery" },
     { label: "About", page: "About" },
+    { label: "Admin", page: "Admin" },
   ];
 
   return (
-    <div className="min-h-screen bg-black text-white font-mono" style={{ imageRendering: "pixelated" }}>
+    <div className="min-h-screen bg-background text-foreground font-mono" style={{ imageRendering: "pixelated" }}>
       <style>{`
-        
         * {
           image-rendering: pixelated;
           image-rendering: -moz-crisp-edges;
           image-rendering: crisp-edges;
         }
-
-        body {
-          background: #000 !important;
-          cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"><rect width="16" height="16" fill="white"/><rect x="1" y="1" width="14" height="14" fill="black"/><rect x="2" y="2" width="12" height="12" fill="white"/></svg>') 8 8, auto;
-        }
-
-        a, button {
-          cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"><path d="M8,0 L16,8 L8,16 L0,8 Z" fill="white"/><path d="M8,2 L14,8 L8,14 L2,8 Z" fill="black"/></svg>') 8 8, pointer;
-        }
-
-        .pixel-border {
-          box-shadow: 
-            0 0 0 2px #fff,
-            0 0 0 4px #000,
-            0 0 0 6px #fff;
-        }
-
-        .window-border {
-          border: 2px solid #fff;
-          box-shadow: 
-            inset 2px 2px 0 rgba(255,255,255,0.3),
-            inset -2px -2px 0 rgba(0,0,0,0.5),
-            2px 2px 0 rgba(255,255,255,0.2);
-        }
-
-        *::-webkit-scrollbar {
-          width: 16px;
-          background: #000;
-        }
-        *::-webkit-scrollbar-track {
-          background: repeating-linear-gradient(
-            45deg,
-            #111,
-            #111 2px,
-            #000 2px,
-            #000 4px
-          );
-        }
-        *::-webkit-scrollbar-thumb {
-          background: #fff;
-          border: 2px solid #000;
-        }
       `}</style>
 
-      {/* Scanline effect */}
-      <div className="fixed inset-0 pointer-events-none z-50 opacity-5" style={{
-        background: 'repeating-linear-gradient(0deg, transparent, transparent 2px, #fff 2px, #fff 4px)'
+      {/* Subtle CRT scanline effect */}
+      <div className="fixed inset-0 pointer-events-none z-50 opacity-[0.03]" style={{
+        background: 'repeating-linear-gradient(0deg, transparent, transparent 2px, hsl(var(--foreground)) 2px, hsl(var(--foreground)) 3px)'
       }} />
 
-      {/* Top menu bar - Mac OS 9 style */}
-      <nav className="fixed top-0 left-0 right-0 z-40 bg-white text-black border-b-2 border-black">
-        <div className="flex items-center h-8 px-2 text-sm">
-          <Link to={createPageUrl("Home")} className="px-2 hover:bg-black hover:text-white transition-colors">
-            MACRO.SYS
+      {/* Top terminal header bar - simple DOS style */}
+      <nav className="fixed top-0 left-0 right-0 z-40 bg-background border-b border-border">
+        <div className="flex items-center h-10 px-4 text-sm">
+          <Link to={createPageUrl("Home")} className="px-3 py-1 hover:text-primary transition-colors">
+            C:\MACRO>
           </Link>
           <div className="hidden md:flex items-center gap-1 ml-4">
             {navItems.map((item) => (
               <Link
                 key={item.page}
                 to={createPageUrl(item.page)}
-                className={`px-2 py-1 transition-colors ${
+                className={`px-3 py-1 transition-colors ${
                   currentPageName === item.page
-                    ? "bg-black text-white"
-                    : "hover:bg-gray-200"
+                    ? "text-primary"
+                    : "hover:text-primary"
                 }`}
               >
                 {item.label}
@@ -92,7 +50,7 @@ export default function Layout({ children, currentPageName }) {
           </div>
           <button
             onClick={() => setMenuOpen(!menuOpen)}
-            className="md:hidden ml-auto px-2 hover:bg-black hover:text-white"
+            className="md:hidden ml-auto px-3 py-1 hover:text-primary transition-colors"
           >
             {menuOpen ? "X" : "≡"}
           </button>
@@ -101,13 +59,13 @@ export default function Layout({ children, currentPageName }) {
 
       {/* Mobile menu */}
       {menuOpen && (
-        <div className="fixed inset-0 z-30 bg-black flex flex-col items-center justify-center gap-8 text-base">
+        <div className="fixed inset-0 z-30 bg-background flex flex-col items-center justify-center gap-8 text-base">
           {navItems.map((item) => (
             <Link
               key={item.page}
               to={createPageUrl(item.page)}
               onClick={() => setMenuOpen(false)}
-              className="hover:text-gray-400"
+              className="hover:text-primary transition-colors"
             >
               {item.label}
             </Link>
@@ -116,16 +74,16 @@ export default function Layout({ children, currentPageName }) {
       )}
 
       {/* Page content */}
-      <main className="pt-8">
+      <main className="pt-10">
         {children}
       </main>
 
-      {/* Footer */}
-      <footer className="border-t-2 border-white mt-20 py-8 px-4">
-        <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4 text-sm">
-          <p>© {new Date().getFullYear()} — gyrotap </p>
+      {/* Footer - minimal DOS style */}
+      <footer className="border-t border-border mt-20 py-6 px-4 bg-background">
+        <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4 text-sm opacity-60">
+          <p>(c) {new Date().getFullYear()} GYROTAP</p>
           <div className="flex items-center gap-4">
-            <span className="hover:text-gray-400 cursor-pointer">CONTACT</span>
+            <span className="hover:text-primary cursor-pointer transition-colors">CONTACT</span>
           </div>
         </div>
       </footer>

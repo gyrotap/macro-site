@@ -20,14 +20,26 @@ export default function HalftoneBackground() {
     resizeCanvas();
     window.addEventListener('resize', resizeCanvas);
 
-    // Track mouse position
+    // Track mouse/touch position
     const handleMouseMove = (e) => {
       mousePos.current = {
         x: e.clientX / window.innerWidth,
         y: e.clientY / window.innerHeight
       };
     };
+
+    const handleTouchMove = (e) => {
+      if (e.touches.length > 0) {
+        const touch = e.touches[0];
+        mousePos.current = {
+          x: touch.clientX / window.innerWidth,
+          y: touch.clientY / window.innerHeight
+        };
+      }
+    };
+
     window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('touchmove', handleTouchMove, { passive: true });
 
     // Halftone dot parameters
     const gridSize = 18; // Space between dots (smaller = more dots)
@@ -73,11 +85,13 @@ export default function HalftoneBackground() {
           const dotSize = maxDotSize * (baseSize + gravity * 0.7);
 
           // Opacity increases subtly near cursor
-          const opacity = 0.12 + gravity * 0.25;
+          const opacity = 0.06 + gravity * 0.15;
 
-          // Color gets LIGHTER near cursor (glowing effect on black)
-          const colorIntensity = Math.floor(80 + gravity * 30); // Light gray to brighter
-          ctx.fillStyle = `rgba(${colorIntensity}, ${colorIntensity}, ${colorIntensity}, ${opacity})`;
+          // DOS amber/orange color palette - gets brighter near cursor
+          const amberR = Math.floor(200 + gravity * 55);
+          const amberG = Math.floor(120 + gravity * 50);
+          const amberB = Math.floor(0 + gravity * 20);
+          ctx.fillStyle = `rgba(${amberR}, ${amberG}, ${amberB}, ${opacity})`;
 
           ctx.beginPath();
           ctx.arc(warpedX, warpedY, Math.max(0.5, dotSize), 0, Math.PI * 2);
@@ -94,6 +108,7 @@ export default function HalftoneBackground() {
     return () => {
       window.removeEventListener('resize', resizeCanvas);
       window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('touchmove', handleTouchMove);
       if (animationFrameId.current) {
         cancelAnimationFrame(animationFrameId.current);
       }

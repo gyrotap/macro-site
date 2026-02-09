@@ -21,13 +21,13 @@ export default function CategoryFilter({ active, onChange, availableCategories }
         <button
           key={cat.value}
           onClick={() => onChange(cat.value)}
-          className={`px-3 py-2 text-sm border-2 transition-all ${
+          className={`px-4 py-2 text-sm border border-border transition-all ${
             active === cat.value
-              ? "bg-white text-black border-white"
-              : "bg-black text-white border-white hover:bg-white hover:text-black"
+              ? "bg-background text-primary border-primary"
+              : "bg-background text-foreground hover:text-primary hover:border-primary"
           }`}
         >
-          [{cat.label}]
+          {cat.label}
         </button>
       ))}
     </div>

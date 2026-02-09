@@ -28,13 +28,13 @@ export default function PhotoGrid({ photos, columns = 3 }) {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.3, delay: idx * 0.05 }}
-                className="relative cursor-pointer"
+                className="relative cursor-pointer group"
                 onClick={() => setSelectedPhoto(photo)}
                 onMouseEnter={() => setHoveredId(photo.id)}
                 onMouseLeave={() => setHoveredId(null)}
               >
-                <div className={`border-4 border-white transition-all ${
-                  hoveredId === photo.id ? "border-gray-400" : ""
+                <div className={`border border-border transition-all ${
+                  hoveredId === photo.id ? "border-primary" : ""
                 }`}>
                   <img
                     src={photo.image_url}
@@ -44,8 +44,8 @@ export default function PhotoGrid({ photos, columns = 3 }) {
                     loading="lazy"
                   />
                   {hoveredId === photo.id && (
-                    <div className="absolute bottom-0 left-0 right-0 bg-white text-black p-2 border-t-4 border-black">
-                      <div className="text-sm">
+                    <div className="absolute bottom-0 left-0 right-0 bg-background border-t border-border p-2">
+                      <div className="text-sm text-primary">
                         {photo.title.toUpperCase()}
                       </div>
                     </div>
