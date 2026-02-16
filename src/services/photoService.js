@@ -1,10 +1,8 @@
 // src/services/photoService.js
 
-import supabase from '@/supabaseClient';
-
 /**
  * Centralized service for photo-related data operations
- * All photo fetching logic goes through this service layer
+ * Fetches from Neon database via Vercel API routes
  */
 export const photoService = {
   /**
@@ -13,18 +11,11 @@ export const photoService = {
    * @returns {Promise<Array>} Array of photo objects
    */
   async getAllPhotos(limit = 100) {
-    const { data, error } = await supabase
-      .from('photos')
-      .select('*')
-      .order('sort_order', { ascending: true })
-      .limit(limit);
-
-    if (error) {
-      console.error('Error fetching photos:', error);
-      throw error;
+    const response = await fetch(`/api/photos?limit=${limit}`);
+    if (!response.ok) {
+      throw new Error('Failed to fetch photos');
     }
-
-    return data || [];
+    return await response.json();
   },
 
   /**
@@ -34,19 +25,11 @@ export const photoService = {
    * @returns {Promise<Array>} Array of photo objects
    */
   async getPhotosByCategory(category, limit = 100) {
-    const { data, error } = await supabase
-      .from('photos')
-      .select('*')
-      .eq('category', category)
-      .order('sort_order', { ascending: true })
-      .limit(limit);
-
-    if (error) {
-      console.error('Error fetching photos by category:', error);
-      throw error;
+    const response = await fetch(`/api/photos?category=${encodeURIComponent(category)}&limit=${limit}`);
+    if (!response.ok) {
+      throw new Error('Failed to fetch photos by category');
     }
-
-    return data || [];
+    return await response.json();
   },
 
   /**
@@ -55,18 +38,10 @@ export const photoService = {
    * @returns {Promise<Array>} Array of featured photo objects
    */
   async getFeaturedPhotos(limit = 20) {
-    const { data, error } = await supabase
-      .from('photos')
-      .select('*')
-      .eq('featured', true)
-      .order('sort_order', { ascending: true })
-      .limit(limit);
-
-    if (error) {
-      console.error('Error fetching featured photos:', error);
-      throw error;
+    const response = await fetch(`/api/photos?featured=true&limit=${limit}`);
+    if (!response.ok) {
+      throw new Error('Failed to fetch featured photos');
     }
-
-    return data || [];
+    return await response.json();
   }
 };

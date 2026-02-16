@@ -1,68 +1,50 @@
 // src/services/adminService.js
 
-import supabase from '@/supabaseClient';
+import { sanityWriteClient } from '@/sanityClient';
 
 /**
  * Admin service for managing photo uploads
+ * Images → Sanity CDN | Metadata → Neon (via Vercel API)
  */
 export const adminService = {
   /**
-   * Upload a photo file to Cloudinary
+   * Upload a photo file to Sanity's image CDN
    * @param {File} file - The image file to upload
    * @returns {Promise<string>} The public URL of the uploaded image
    */
   async uploadImage(file) {
-    const cloudName = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
-    const uploadPreset = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
-
-    if (!cloudName || !uploadPreset) {
-      throw new Error('Missing Cloudinary configuration. Please check your .env file.');
-    }
-
-    const formData = new FormData();
-    formData.append('file', file);
-    formData.append('upload_preset', uploadPreset);
-    formData.append('folder', 'macro-photos');
-
     try {
-      const response = await fetch(
-        `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
-        {
-          method: 'POST',
-          body: formData
-        }
-      );
+      const asset = await sanityWriteClient.assets.upload('image', file, {
+        filename: file.name,
+      });
 
-      if (!response.ok) {
-        throw new Error(`Cloudinary upload failed: ${response.statusText}`);
-      }
-
-      const data = await response.json();
-      return data.secure_url;
+      // Build the CDN URL from the asset
+      const imageUrl = `https://cdn.sanity.io/images/${import.meta.env.VITE_SANITY_PROJECT_ID}/${import.meta.env.VITE_SANITY_DATASET}/${asset._id.replace('image-', '').replace(/-([^-]+)$/, '.$1')}`;
+      return imageUrl;
     } catch (error) {
-      console.error('Error uploading to Cloudinary:', error);
+      console.error('Error uploading to Sanity:', error);
       throw error;
     }
   },
 
   /**
-   * Create a new photo entry in the database
+   * Create a new photo entry in the database via API
    * @param {Object} photoData - Photo metadata
    * @returns {Promise<Object>} The created photo record
    */
   async createPhoto(photoData) {
-    const { data, error } = await supabase
-      .from('photos')
-      .insert([photoData])
-      .select()
-      .single();
+    const response = await fetch('/api/photos', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(photoData),
+    });
 
-    if (error) {
-      console.error('Error creating photo entry:', error);
-      throw error;
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.error || 'Failed to create photo entry');
     }
 
-    return data;
+    return await response.json();
   },
 
   /**
@@ -72,10 +54,10 @@ export const adminService = {
    * @returns {Promise<Object>} The created photo record
    */
   async uploadPhoto(file, metadata) {
-    // Upload image first
+    // Upload image to Sanity CDN
     const imageUrl = await this.uploadImage(file);
 
-    // Create database entry
+    // Save metadata to Neon via API
     const photoData = {
       image_url: imageUrl,
       title: metadata.title,
@@ -98,17 +80,14 @@ export const adminService = {
    * @returns {Promise<number>} The next sort order number
    */
   async getNextSortOrder() {
-    const { data, error } = await supabase
-      .from('photos')
-      .select('sort_order')
-      .order('sort_order', { ascending: false })
-      .limit(1);
-
-    if (error) {
+    try {
+      const response = await fetch('/api/next-sort-order');
+      if (!response.ok) return 1;
+      const data = await response.json();
+      return data.next_order || 1;
+    } catch (error) {
       console.error('Error getting sort order:', error);
       return 1;
     }
-
-    return data && data.length > 0 ? data[0].sort_order + 1 : 1;
   }
 };

@@ -1,23 +1,10 @@
 import { useLocation } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
 
 
-export default function PageNotFound({}) {
+export default function PageNotFound() {
     const location = useLocation();
     const pageName = location.pathname.substring(1);
 
-    const { data: authData, isFetched } = useQuery({
-        queryKey: ['user'],
-        queryFn: async () => {
-            try {
-                const user = await supabase.auth.me();
-                return { user, isAuthenticated: true };
-            } catch (error) {
-                return { user: null, isAuthenticated: false };
-            }
-        }
-    });
-    
     return (
         <div className="min-h-screen flex items-center justify-center p-6 bg-background">
             <div className="max-w-md w-full border border-border bg-background">
@@ -43,23 +30,6 @@ export default function PageNotFound({}) {
                             The page <span className="font-medium text-primary">"{pageName}"</span> could not be found.
                         </p>
                     </div>
-
-                    {/* Admin Note */}
-                    {isFetched && authData.isAuthenticated && authData.user?.role === 'admin' && (
-                        <div className="mt-8 p-4 bg-background border border-border">
-                            <div className="flex items-start space-x-3">
-                                <div className="flex-shrink-0 w-5 h-5 border border-accent flex items-center justify-center mt-0.5">
-                                    <div className="w-2 h-2 bg-accent"></div>
-                                </div>
-                                <div className="text-left space-y-1">
-                                    <p className="text-sm font-medium text-primary">Admin Note</p>
-                                    <p className="text-sm text-muted-foreground leading-relaxed">
-                                        This page does not exist. You may want to check your routing configuration or create a new page for <span className="font-medium text-primary">"{pageName}"</span>.
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    )}
 
                     {/* Action Button */}
                     <div className="pt-6 text-center">
