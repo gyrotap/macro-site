@@ -132,13 +132,40 @@ export default function Admin() {
     });
   };
 
+  // Check if file is a JXL format (can't be decoded by canvas)
+  const isJxlFile = (file) => {
+    return file.name.toLowerCase().endsWith('.jxl') || file.type === 'image/jxl';
+  };
+
   // Handle file selection
   const handleFileSelect = async (selectedFile) => {
-    if (selectedFile && selectedFile.type.startsWith('image/')) {
+    const isImage = selectedFile && (selectedFile.type.startsWith('image/') || isJxlFile(selectedFile));
+
+    if (isImage) {
       try {
+        // JXL files: skip canvas optimization (browser can't decode them)
+        // Upload raw — JXL is already very efficient compression
+        if (isJxlFile(selectedFile)) {
+          setFile(selectedFile);
+          const fileSizeMB = (selectedFile.size / 1024 / 1024).toFixed(2);
+          setFormData(prev => ({
+            ...prev,
+            file_size_mb: parseFloat(fileSizeMB),
+            megapixels: 0
+          }));
+
+          // JXL preview won't work in most browsers, show placeholder
+          setPreview(null);
+          setMessage({
+            type: "success",
+            text: `JXL file selected: ${fileSizeMB}MB (uploaded as-is, Sanity CDN will serve WebP fallback)`
+          });
+          return;
+        }
+
         setMessage({ type: "", text: "Optimizing image..." });
 
-        // Optimize the image
+        // Standard images: optimize to WebP
         const result = await optimizeImage(selectedFile);
         setFile(result.file);
 
@@ -289,9 +316,16 @@ export default function Admin() {
                     onDragLeave={handleDragLeave}
                     onDrop={handleDrop}
                   >
-                    {preview ? (
+                    {(preview || file) ? (
                       <div className="space-y-4">
-                        <img src={preview} alt="Preview" className="max-h-48 mx-auto border border-border" />
+                        {preview ? (
+                          <img src={preview} alt="Preview" className="max-h-48 mx-auto border border-border" />
+                        ) : (
+                          <div className="border border-border p-6 text-center">
+                            <p className="text-primary text-sm">{file?.name}</p>
+                            <p className="text-xs text-muted-foreground mt-1">JXL preview not available in this browser</p>
+                          </div>
+                        )}
                         <button
                           type="button"
                           onClick={() => {
@@ -310,7 +344,7 @@ export default function Admin() {
                         <input
                           ref={fileInputRef}
                           type="file"
-                          accept="image/*"
+                          accept="image/*,.jxl"
                           onChange={(e) => handleFileSelect(e.target.files[0])}
                           className="hidden"
                           id="file-input"

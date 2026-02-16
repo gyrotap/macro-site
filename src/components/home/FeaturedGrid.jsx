@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import PhotoLightbox from "../gallery/PhotoLightbox";
+import { optimizedUrl } from "@/utils/imageUrl";
 
 export default function FeaturedGrid({ photos }) {
   const [selectedPhoto, setSelectedPhoto] = useState(null);
@@ -37,7 +38,7 @@ export default function FeaturedGrid({ photos }) {
             onClick={() => setSelectedPhoto(photo)}
           >
             <img
-              src={photo.image_url}
+              src={optimizedUrl(photo.image_url)}
               alt={photo.title}
               className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
               loading="lazy"

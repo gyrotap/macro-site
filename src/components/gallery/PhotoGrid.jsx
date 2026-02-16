@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import PhotoLightbox from "./PhotoLightbox";
+import { optimizedUrl } from "@/utils/imageUrl";
 
 export default function PhotoGrid({ photos, columns = 3 }) {
   const [selectedPhoto, setSelectedPhoto] = useState(null);
@@ -37,7 +38,7 @@ export default function PhotoGrid({ photos, columns = 3 }) {
                   hoveredId === photo.id ? "border-primary" : ""
                 }`}>
                   <img
-                    src={photo.image_url}
+                    src={optimizedUrl(photo.image_url)}
                     alt={photo.title}
                     className="w-full object-cover"
                     style={{ imageRendering: "auto" }}

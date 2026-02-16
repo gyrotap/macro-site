@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import DraggableWindow from "@/components/DraggableWindow";
+import { optimizedUrl } from "@/utils/imageUrl";
 
 export default function HeroSection({ featuredPhoto }) {
   return (
@@ -58,7 +59,7 @@ export default function HeroSection({ featuredPhoto }) {
                     className="border border-border"
                   >
                     <img
-                      src={featuredPhoto.image_url}
+                      src={optimizedUrl(featuredPhoto.image_url)}
                       alt={featuredPhoto.title}
                       className="w-full aspect-square object-cover"
                       style={{ imageRendering: "auto" }}

@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { optimizedUrl } from "@/utils/imageUrl";
 
 export default function PhotoLightbox({ photo, photos, onClose, onNavigate }) {
   const currentIndex = photos.findIndex((p) => p.id === photo.id);
@@ -70,7 +71,7 @@ export default function PhotoLightbox({ photo, photos, onClose, onNavigate }) {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.2 }}
-                src={photo.image_url}
+                src={optimizedUrl(photo.image_url)}
                 alt={photo.title}
                 className="max-h-full max-w-full object-contain border border-border"
                 style={{ imageRendering: "auto" }}
