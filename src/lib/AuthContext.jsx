@@ -13,13 +13,13 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const checkAppState = () => {
-    const authenticated = sessionStorage.getItem('admin_authenticated');
+    const authenticated = sessionStorage.getItem('admin_token');
     setIsAuthenticated(!!authenticated);
     setIsLoadingAuth(false);
   };
 
   const logout = () => {
-    sessionStorage.removeItem('admin_authenticated');
+    sessionStorage.removeItem('admin_token');
     setIsAuthenticated(false);
   };
 

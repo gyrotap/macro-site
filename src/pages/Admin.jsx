@@ -42,8 +42,8 @@ export default function Admin() {
 
   // Check authentication on mount
   useEffect(() => {
-    const isAuthenticated = sessionStorage.getItem("admin_authenticated");
-    if (!isAuthenticated) {
+    const token = sessionStorage.getItem("admin_token");
+    if (!token) {
       navigate("/login");
     }
   }, [navigate]);
@@ -174,7 +174,7 @@ export default function Admin() {
 
   // Handle logout
   const handleLogout = () => {
-    sessionStorage.removeItem("admin_authenticated");
+    sessionStorage.removeItem("admin_token");
     navigate("/login");
   };
 

@@ -1,30 +1,52 @@
 // src/services/adminService.js
 
-import { sanityWriteClient } from '@/sanityClient';
-
 /**
  * Admin service for managing photo uploads
- * Images → Sanity CDN | Metadata → Neon (via Vercel API)
+ * Images → Sanity CDN (via server API) | Metadata → Neon (via server API)
+ * All write operations require auth token from /api/login
  */
+
+function getAuthToken() {
+  const token = sessionStorage.getItem('admin_token');
+  if (!token) throw new Error('Not authenticated');
+  return token;
+}
+
 export const adminService = {
   /**
-   * Upload a photo file to Sanity's image CDN
+   * Upload a photo file to Sanity via server-side API
    * @param {File} file - The image file to upload
    * @returns {Promise<string>} The public URL of the uploaded image
    */
   async uploadImage(file) {
-    try {
-      const asset = await sanityWriteClient.assets.upload('image', file, {
-        filename: file.name,
-      });
+    const token = getAuthToken();
 
-      // Build the CDN URL from the asset
-      const imageUrl = `https://cdn.sanity.io/images/${import.meta.env.VITE_SANITY_PROJECT_ID}/${import.meta.env.VITE_SANITY_DATASET}/${asset._id.replace('image-', '').replace(/-([^-]+)$/, '.$1')}`;
-      return imageUrl;
-    } catch (error) {
-      console.error('Error uploading to Sanity:', error);
-      throw error;
+    // Convert file to base64
+    const arrayBuffer = await file.arrayBuffer();
+    const base64 = btoa(
+      new Uint8Array(arrayBuffer).reduce((data, byte) => data + String.fromCharCode(byte), '')
+    );
+
+    const response = await fetch('/api/upload', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        imageData: base64,
+        filename: file.name,
+        contentType: file.type,
+      }),
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.error || 'Upload failed');
     }
+
+    const { imageUrl } = await response.json();
+    return imageUrl;
   },
 
   /**
@@ -33,9 +55,14 @@ export const adminService = {
    * @returns {Promise<Object>} The created photo record
    */
   async createPhoto(photoData) {
+    const token = getAuthToken();
+
     const response = await fetch('/api/photos', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
       body: JSON.stringify(photoData),
     });
 
@@ -54,7 +81,7 @@ export const adminService = {
    * @returns {Promise<Object>} The created photo record
    */
   async uploadPhoto(file, metadata) {
-    // Upload image to Sanity CDN
+    // Upload image to Sanity CDN via server
     const imageUrl = await this.uploadImage(file);
 
     // Save metadata to Neon via API

@@ -1,6 +1,7 @@
 // api/photos.js - Vercel Serverless Function for photo CRUD operations with Neon
 
 import { neon } from '@neondatabase/serverless';
+import { verifyToken } from './login.js';
 
 function getDb() {
   const sql = neon(process.env.DATABASE_URL);
@@ -11,7 +12,7 @@ export default async function handler(req, res) {
   // Set CORS headers
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
 
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
@@ -22,6 +23,7 @@ export default async function handler(req, res) {
   try {
     switch (req.method) {
       case 'GET': {
+        // Public - no auth required for reading photos
         const { category, featured, limit = 100 } = req.query;
 
         let query;
@@ -51,6 +53,13 @@ export default async function handler(req, res) {
       }
 
       case 'POST': {
+        // Auth required for creating photos
+        const authHeader = req.headers.authorization;
+        const token = authHeader?.replace('Bearer ', '');
+        if (!verifyToken(token)) {
+          return res.status(401).json({ error: 'Unauthorized' });
+        }
+
         const {
           image_url,
           title,
@@ -83,6 +92,13 @@ export default async function handler(req, res) {
       }
 
       case 'DELETE': {
+        // Auth required for deleting photos
+        const authHeader = req.headers.authorization;
+        const token = authHeader?.replace('Bearer ', '');
+        if (!verifyToken(token)) {
+          return res.status(401).json({ error: 'Unauthorized' });
+        }
+
         const { id } = req.query;
         if (!id) {
           return res.status(400).json({ error: 'Missing photo id' });

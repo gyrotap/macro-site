@@ -10,19 +10,27 @@ export default function Login() {
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setError("");
 
-    // Check credentials against environment variables
-    const validUsername = import.meta.env.VITE_ADMIN_USERNAME;
-    const validPassword = import.meta.env.VITE_ADMIN_PASSWORD;
+    try {
+      const response = await fetch('/api/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password }),
+      });
 
-    if (username === validUsername && password === validPassword) {
-      // Set session token
-      sessionStorage.setItem("admin_authenticated", "true");
-      navigate("/admin");
-    } else {
-      setError("Invalid credentials");
+      if (response.ok) {
+        const { token } = await response.json();
+        sessionStorage.setItem("admin_token", token);
+        navigate("/admin");
+      } else {
+        setError("Invalid credentials");
+        setPassword("");
+      }
+    } catch (err) {
+      setError("Login failed. Please try again.");
       setPassword("");
     }
   };
