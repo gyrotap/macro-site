@@ -4,15 +4,20 @@ import { motion } from "framer-motion";
 import HalftoneBackground from "@/components/HalftoneBackground";
 import DraggableWindow from "@/components/DraggableWindow";
 import { adminService } from "@/services/adminService";
+import exifr from "exifr";
 
 const CATEGORIES = [
   { value: "", label: "None" },
   { value: "insects", label: "Insects" },
+  { value: "arachnids", label: "Arachnids" },
+  { value: "plants", label: "Plants" },
   { value: "flowers", label: "Flowers" },
+  { value: "fungi", label: "Fungi" },
+  { value: "minerals", label: "Minerals" },
   { value: "water_drops", label: "Water Drops" },
   { value: "textures", label: "Textures" },
-  { value: "fungi", label: "Fungi" },
-  { value: "crystals", label: "Crystals" },
+  { value: "eyes", label: "Eyes" },
+  { value: "scales", label: "Scales" },
 ];
 
 const MONTHS = [
@@ -38,6 +43,8 @@ export default function Admin() {
   const [isDragging, setIsDragging] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [message, setMessage] = useState({ type: "", text: "" });
+  const [exifData, setExifData] = useState(null);
+  const [rawExif, setRawExif] = useState(null);
   const fileInputRef = useRef(null);
 
   // Check authentication on mount
@@ -60,6 +67,54 @@ export default function Admin() {
     file_size_mb: 0,
     megapixels: 0
   });
+
+  // Extract EXIF metadata from file before canvas optimization strips it
+  const extractExif = async (file) => {
+    try {
+      // Parse all EXIF tags without filtering — Sony/Nikon/Canon use different tag names
+      const exif = await exifr.parse(file, { tiff: true, exif: true, gps: true, xmp: true, icc: false });
+      if (!exif) return null;
+
+      // Date: try multiple common tag names
+      const dateTaken = exif.DateTimeOriginal || exif.CreateDate || exif.DateTime;
+      const month = dateTaken instanceof Date ? String(dateTaken.getMonth() + 1).padStart(2, '0') : null;
+      const year = dateTaken instanceof Date ? String(dateTaken.getFullYear()) : null;
+
+      // Camera make/model
+      const make = exif.Make || exif.make || '';
+      const model = exif.Model || exif.model || '';
+      const camera = [make, model].filter(Boolean).join(' ').trim() || null;
+
+      // Lens — Sony uses LensModel, Nikon uses Lens, Canon uses LensInfo
+      const lens = exif.LensModel || exif.Lens || exif.LensMake || exif.LensInfo || null;
+
+      // Focal length
+      const fl = exif.FocalLength ?? exif.focalLength;
+      const fl35 = exif.FocalLengthIn35mmFormat ?? exif.FocalLengthIn35mmFilm;
+      const focalLength = fl != null ? `${Math.round(fl)}mm` : null;
+      const focalLength35mm = fl35 != null ? `${Math.round(fl35)}mm eq.` : null;
+
+      // Aperture
+      const fnum = exif.FNumber ?? exif.ApertureValue;
+      const aperture = fnum != null ? `f/${fnum}` : null;
+
+      // Shutter speed
+      let shutter = null;
+      const et = exif.ExposureTime ?? exif.ShutterSpeedValue;
+      if (et != null) {
+        shutter = et < 1 ? `1/${Math.round(1 / et)}s` : `${et}s`;
+      }
+
+      // ISO
+      const isoVal = exif.ISO ?? exif.ISOSpeedRatings ?? exif.RecommendedExposureIndex;
+      const iso = isoVal != null ? `ISO ${isoVal}` : null;
+
+      return { camera, lens, focalLength, focalLength35mm, aperture, shutter, iso, month, year };
+    } catch (err) {
+      console.error('EXIF parse error:', err);
+      return null;
+    }
+  };
 
   // Optimize image: resize to max 2500px and convert to WebP
   const optimizeImage = async (file) => {
@@ -143,6 +198,12 @@ export default function Admin() {
 
     if (isImage) {
       try {
+        // Extract EXIF before canvas optimization strips it
+        const rawParsed = await exifr.parse(selectedFile, { tiff: true, exif: true, gps: true, xmp: true, icc: false }).catch(() => null);
+        setRawExif(rawParsed);
+        const exif = await extractExif(selectedFile);
+        setExifData(exif);
+
         // JXL files: skip canvas optimization (browser can't decode them)
         // Upload raw — JXL is already very efficient compression
         if (isJxlFile(selectedFile)) {
@@ -151,7 +212,9 @@ export default function Admin() {
           setFormData(prev => ({
             ...prev,
             file_size_mb: parseFloat(fileSizeMB),
-            megapixels: 0
+            megapixels: 0,
+            ...(exif?.month && !prev.date_taken_month ? { date_taken_month: exif.month } : {}),
+            ...(exif?.year && !prev.date_taken_year ? { date_taken_year: exif.year } : {}),
           }));
 
           // JXL preview won't work in most browsers, show placeholder
@@ -163,18 +226,20 @@ export default function Admin() {
           return;
         }
 
-        setMessage({ type: "", text: "Optimizing image..." });
+        setMessage({ type: "", text: "Reading EXIF and optimizing image..." });
 
         // Standard images: optimize to WebP
         const result = await optimizeImage(selectedFile);
         setFile(result.file);
 
-        // Update form data with file size and megapixels
+        // Update form data with file size, megapixels, and EXIF date
         const fileSizeMB = (result.file.size / 1024 / 1024).toFixed(2);
         setFormData(prev => ({
           ...prev,
           file_size_mb: parseFloat(fileSizeMB),
-          megapixels: parseFloat(result.megapixels)
+          megapixels: parseFloat(result.megapixels),
+          ...(exif?.month && !prev.date_taken_month ? { date_taken_month: exif.month } : {}),
+          ...(exif?.year && !prev.date_taken_year ? { date_taken_year: exif.year } : {}),
         }));
 
         // Create preview from optimized file
@@ -186,10 +251,9 @@ export default function Admin() {
 
         // Show optimization success
         const originalSize = (selectedFile.size / 1024 / 1024).toFixed(2);
-        const optimizedSize = fileSizeMB;
         setMessage({
           type: "success",
-          text: `Image optimized: ${originalSize}MB → ${optimizedSize}MB (WebP, ${result.originalWidth}×${result.originalHeight}, ${result.megapixels}MP)`
+          text: `Image optimized: ${originalSize}MB → ${fileSizeMB}MB (WebP, ${result.originalWidth}×${result.originalHeight}, ${result.megapixels}MP)`
         });
       } catch (error) {
         setMessage({ type: "error", text: `Optimization failed: ${error.message}` });
@@ -247,7 +311,13 @@ export default function Admin() {
       // Upload photo
       await adminService.uploadPhoto(file, {
         ...formData,
-        sort_order: parseInt(sortOrder)
+        sort_order: parseInt(sortOrder),
+        camera: exifData?.camera || null,
+        lens: exifData?.lens || null,
+        focal_length: exifData?.focalLength || null,
+        aperture: exifData?.aperture || null,
+        shutter_speed: exifData?.shutter || null,
+        iso: exifData?.iso ? parseInt(exifData.iso.replace('ISO ', '')) : null,
       });
 
       setMessage({ type: "success", text: "Photo uploaded successfully!" });
@@ -255,6 +325,8 @@ export default function Admin() {
       // Reset form
       setFile(null);
       setPreview(null);
+      setExifData(null);
+      setRawExif(null);
       setFormData({
         title: "",
         category: "",
@@ -331,6 +403,8 @@ export default function Admin() {
                           onClick={() => {
                             setFile(null);
                             setPreview(null);
+                            setExifData(null);
+                            setRawExif(null);
                             if (fileInputRef.current) fileInputRef.current.value = "";
                           }}
                           className="text-sm text-primary hover:text-accent transition-colors"
@@ -439,18 +513,71 @@ export default function Admin() {
                 </div>
 
                 {/* Auto-captured info (read-only display) */}
-                {(formData.file_size_mb > 0 || formData.megapixels > 0) && (
+                {(formData.file_size_mb > 0 || formData.megapixels > 0 || exifData) && (
                   <div className="border border-border p-4 bg-muted/20">
-                    <p className="text-xs text-muted-foreground mb-2">AUTO-CAPTURED INFO</p>
-                    <div className="grid grid-cols-2 gap-4 text-sm">
-                      <div>
-                        <span className="text-muted-foreground">File Size: </span>
-                        <span className="text-primary">{formData.file_size_mb} MB</span>
-                      </div>
-                      <div>
-                        <span className="text-muted-foreground">Megapixels: </span>
-                        <span className="text-primary">{formData.megapixels} MP</span>
-                      </div>
+                    <p className="text-xs text-muted-foreground mb-3">AUTO-CAPTURED INFO</p>
+                    <div className="grid grid-cols-2 gap-x-6 gap-y-2 text-sm">
+                      {formData.file_size_mb > 0 && (
+                        <div>
+                          <span className="text-muted-foreground">File Size: </span>
+                          <span className="text-primary">{formData.file_size_mb} MB</span>
+                        </div>
+                      )}
+                      {formData.megapixels > 0 && (
+                        <div>
+                          <span className="text-muted-foreground">Megapixels: </span>
+                          <span className="text-primary">{formData.megapixels} MP</span>
+                        </div>
+                      )}
+                      {exifData?.camera && (
+                        <div className="col-span-2">
+                          <span className="text-muted-foreground">Camera: </span>
+                          <span className="text-primary">{exifData.camera}</span>
+                        </div>
+                      )}
+                      {exifData?.lens && (
+                        <div className="col-span-2">
+                          <span className="text-muted-foreground">Lens: </span>
+                          <span className="text-primary">{exifData.lens}</span>
+                        </div>
+                      )}
+                      {exifData?.focalLength && (
+                        <div>
+                          <span className="text-muted-foreground">Focal Length: </span>
+                          <span className="text-primary">{exifData.focalLength}{exifData.focalLength35mm ? ` (${exifData.focalLength35mm})` : ''}</span>
+                        </div>
+                      )}
+                      {exifData?.aperture && (
+                        <div>
+                          <span className="text-muted-foreground">Aperture: </span>
+                          <span className="text-primary">{exifData.aperture}</span>
+                        </div>
+                      )}
+                      {exifData?.shutter && (
+                        <div>
+                          <span className="text-muted-foreground">Shutter: </span>
+                          <span className="text-primary">{exifData.shutter}</span>
+                        </div>
+                      )}
+                      {exifData?.iso && (
+                        <div>
+                          <span className="text-muted-foreground">ISO: </span>
+                          <span className="text-primary">{exifData.iso}</span>
+                        </div>
+                      )}
+                      {!exifData && (
+                        <div className="col-span-2">
+                          <p className="text-xs text-muted-foreground italic">No EXIF data found in this file</p>
+                          {rawExif && (
+                            <details className="mt-2">
+                              <summary className="text-xs text-muted-foreground cursor-pointer hover:text-primary">Show raw EXIF tags</summary>
+                              <pre className="text-xs text-muted-foreground mt-1 max-h-32 overflow-y-auto whitespace-pre-wrap break-all">
+                                {JSON.stringify(rawExif, null, 2)}
+                              </pre>
+                            </details>
+                          )}
+                        </div>
+                      )}
                     </div>
                   </div>
                 )}

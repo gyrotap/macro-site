@@ -3,11 +3,15 @@ import React from "react";
 const categories = [
   { value: "all", label: "ALL" },
   { value: "insects", label: "INSECTS" },
+  { value: "arachnids", label: "ARACHNIDS" },
+  { value: "plants", label: "PLANTS" },
   { value: "flowers", label: "FLOWERS" },
-  { value: "water_drops", label: "WATER" },
-  { value: "textures", label: "TEXTURES" },
   { value: "fungi", label: "FUNGI" },
-  { value: "crystals", label: "CRYSTALS" },
+  { value: "minerals", label: "MINERALS" },
+  { value: "water_drops", label: "WATER DROPS" },
+  { value: "textures", label: "TEXTURES" },
+  { value: "eyes", label: "EYES" },
+  { value: "scales", label: "SCALES" },
 ];
 
 export default function CategoryFilter({ active, onChange, availableCategories }) {

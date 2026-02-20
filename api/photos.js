@@ -71,19 +71,28 @@ export default async function handler(req, res) {
           date_taken_month,
           date_taken_year,
           file_size_mb,
-          megapixels
+          megapixels,
+          camera,
+          lens,
+          focal_length,
+          aperture,
+          shutter_speed,
+          iso,
         } = req.body;
 
         const result = await sql`
           INSERT INTO photos (
             image_url, title, category, subject, magnification,
             featured, sort_order, date_taken_month, date_taken_year,
-            file_size_mb, megapixels
+            file_size_mb, megapixels,
+            camera, lens, focal_length, aperture, shutter_speed, iso
           ) VALUES (
             ${image_url}, ${title}, ${category || null}, ${subject || null},
             ${magnification || null}, ${featured || false}, ${sort_order || 999},
             ${date_taken_month || null}, ${date_taken_year || null},
-            ${file_size_mb || null}, ${megapixels || null}
+            ${file_size_mb || null}, ${megapixels || null},
+            ${camera || null}, ${lens || null}, ${focal_length || null},
+            ${aperture || null}, ${shutter_speed || null}, ${iso || null}
           )
           RETURNING *
         `;

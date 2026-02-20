@@ -44,13 +44,6 @@ export default function PhotoGrid({ photos, columns = 3 }) {
                     style={{ imageRendering: "auto" }}
                     loading="lazy"
                   />
-                  {hoveredId === photo.id && (
-                    <div className="absolute bottom-0 left-0 right-0 bg-background border-t border-border p-2">
-                      <div className="text-sm text-primary">
-                        {photo.title.toUpperCase()}
-                      </div>
-                    </div>
-                  )}
                 </div>
               </motion.div>
             ))}

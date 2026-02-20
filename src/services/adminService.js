@@ -96,7 +96,13 @@ export const adminService = {
       date_taken_month: metadata.date_taken_month || null,
       date_taken_year: metadata.date_taken_year || null,
       file_size_mb: metadata.file_size_mb || null,
-      megapixels: metadata.megapixels || null
+      megapixels: metadata.megapixels || null,
+      camera: metadata.camera || null,
+      lens: metadata.lens || null,
+      focal_length: metadata.focal_length || null,
+      aperture: metadata.aperture || null,
+      shutter_speed: metadata.shutter_speed || null,
+      iso: metadata.iso || null,
     };
 
     return await this.createPhoto(photoData);

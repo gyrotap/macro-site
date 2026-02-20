@@ -22,11 +22,6 @@ export default function Layout({ children, currentPageName }) {
         }
       `}</style>
 
-      {/* Subtle CRT scanline effect */}
-      <div className="fixed inset-0 pointer-events-none z-50 opacity-[0.03]" style={{
-        background: 'repeating-linear-gradient(0deg, transparent, transparent 2px, hsl(var(--foreground)) 2px, hsl(var(--foreground)) 3px)'
-      }} />
-
       {/* Top terminal header bar - simple DOS style */}
       <nav className="fixed top-0 left-0 right-0 z-40 bg-background border-b border-border">
         <div className="flex items-center h-10 px-4 text-sm">

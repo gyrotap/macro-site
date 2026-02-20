@@ -24,7 +24,7 @@ export default function FeaturedGrid({ photos }) {
         </p>
       </motion.div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+      <div className="columns-1 md:columns-2 gap-4 md:gap-6">
         {photos.slice(0, 6).map((photo, idx) => (
           <motion.div
             key={photo.id}
@@ -32,15 +32,13 @@ export default function FeaturedGrid({ photos }) {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: idx * 0.1 }}
-            className={`group relative cursor-pointer overflow-hidden ${
-              idx === 0 ? "md:col-span-2 md:aspect-[21/9]" : "aspect-[4/3]"
-            }`}
+            className="group relative cursor-pointer overflow-hidden break-inside-avoid mb-4 md:mb-6"
             onClick={() => setSelectedPhoto(photo)}
           >
             <img
               src={optimizedUrl(photo.image_url)}
               alt={photo.title}
-              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
+              className="w-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
               loading="lazy"
             />
             <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-all duration-500 flex items-end">
