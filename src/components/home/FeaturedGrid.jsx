@@ -17,7 +17,7 @@ export default function FeaturedGrid({ photos }) {
         transition={{ duration: 0.6 }}
         className="mb-8"
       >
-        <p className="text-xs tracking-widest text-muted-foreground uppercase">Selected Works</p>
+        <p className="font-pixel text-xs text-muted-foreground">// SELECTED WORKS</p>
       </motion.div>
 
       <div className="columns-1 md:columns-2 gap-4 md:gap-5">

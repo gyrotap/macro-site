@@ -43,11 +43,12 @@ export default function PhotoLightbox({ photo, photos, onClose, onNavigate }) {
           {/* Neumorphic window */}
           <div className="flex-1 flex flex-col neu-raised rounded-lg overflow-hidden min-h-0">
             {/* Header */}
-            <div className="flex-shrink-0 bg-card border-b border-border/40 px-5 py-2.5 flex items-center justify-between">
-              <div className="text-sm flex-1 text-foreground truncate pr-4">
+            <div className="flex-shrink-0 bg-card border-b border-border/40 px-5 py-2.5 flex items-center gap-3 justify-between">
+              <span className="font-pixel text-xs text-muted-foreground flex-shrink-0">VIEWER</span>
+              <div className="text-sm flex-1 text-foreground truncate">
                 <em className="text-primary">{photo.title}</em>
-                <span className="text-muted-foreground ml-2 text-xs">— {currentIndex + 1}/{photos.length}</span>
               </div>
+              <span className="font-pixel text-xs text-muted-foreground flex-shrink-0">{currentIndex + 1}/{photos.length}</span>
               <button
                 onClick={onClose}
                 className="flex-shrink-0 w-7 h-7 neu-btn rounded flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors"

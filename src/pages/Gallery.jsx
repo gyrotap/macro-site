@@ -34,9 +34,10 @@ export default function Gallery() {
             transition={{ duration: 0.5 }}
             className="neu-raised rounded-lg overflow-hidden mb-8"
           >
-            <div className="window-titlebar bg-card border-b border-border/40 px-5 py-2.5 text-xs cursor-grab active:cursor-grabbing flex items-center gap-2">
+            <div className="window-titlebar bg-card border-b border-border/40 px-5 py-2.5 cursor-grab active:cursor-grabbing flex items-center gap-3">
               <span className="w-2.5 h-2.5 rounded-full bg-primary/60 block" />
-              <span className="text-muted-foreground tracking-widest">GALLERY — {photos.length} images</span>
+              <span className="font-pixel text-xs text-muted-foreground">GALLERY.DIR</span>
+              <span className="text-xs text-muted-foreground/50 ml-auto">{photos.length} files</span>
             </div>
             <div className="bg-card p-6">
               <h1 className="text-2xl mb-5 text-foreground font-light tracking-wider">Collection</h1>

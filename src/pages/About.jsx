@@ -16,14 +16,14 @@ export default function About() {
             className="neu-raised rounded-lg overflow-hidden"
           >
             {/* Titlebar */}
-            <div className="window-titlebar bg-card border-b border-border/40 px-5 py-2.5 cursor-grab active:cursor-grabbing flex items-center gap-2">
+            <div className="window-titlebar bg-card border-b border-border/40 px-5 py-2.5 cursor-grab active:cursor-grabbing flex items-center gap-3">
               <span className="w-2.5 h-2.5 rounded-full bg-primary/60 block" />
-              <span className="text-xs text-muted-foreground tracking-widest">ABOUT.TXT</span>
+              <span className="font-pixel text-xs text-muted-foreground">ABOUT.TXT</span>
             </div>
 
             {/* Content */}
             <div className="bg-card p-8 md:p-12">
-              <p className="text-xs text-muted-foreground mb-6 tracking-widest uppercase">About</p>
+              <p className="font-pixel text-xs text-muted-foreground mb-6">// ABOUT</p>
 
               <h1 className="text-3xl md:text-4xl mb-8 text-foreground font-light">
                 Macro
@@ -48,17 +48,17 @@ export default function About() {
               </div>
 
               <div className="neu-inset rounded-lg p-6">
-                <p className="text-xs text-muted-foreground mb-5 tracking-widest uppercase">Equipment</p>
+                <p className="font-pixel text-xs text-muted-foreground mb-5">// EQUIPMENT</p>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8 text-sm">
                   <div className="space-y-2">
-                    <p className="text-muted-foreground text-xs tracking-wider mb-3">Camera & Optics</p>
+                    <p className="font-pixel text-xs text-muted-foreground/60 mb-3">CAMERA + OPTICS</p>
                     <p className="text-foreground">Sony A7 II</p>
                     <p className="text-foreground">Sigma 50mm f/1.4 DG DN Art</p>
                     <p className="text-foreground">Extension tubes</p>
                     <p className="text-foreground">Focus rail</p>
                   </div>
                   <div className="space-y-2">
-                    <p className="text-muted-foreground text-xs tracking-wider mb-3">Techniques</p>
+                    <p className="font-pixel text-xs text-muted-foreground/60 mb-3">TECHNIQUES</p>
                     <p className="text-foreground">Focus stacking</p>
                     <p className="text-foreground">High magnification ratios</p>
                     <p className="text-foreground">Diffused natural lighting</p>
@@ -68,9 +68,9 @@ export default function About() {
             </div>
 
             {/* Footer bar */}
-            <div className="bg-card border-t border-border/40 px-5 py-1.5 flex justify-between text-xs text-muted-foreground">
-              <span>EOF</span>
-              <span>v1.0.0</span>
+            <div className="bg-card border-t border-border/40 px-5 py-1.5 flex justify-between">
+              <span className="font-pixel text-xs text-muted-foreground">EOF</span>
+              <span className="font-pixel text-xs text-muted-foreground">v1.0.0</span>
             </div>
           </motion.div>
         </DraggableWindow>

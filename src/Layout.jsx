@@ -18,7 +18,7 @@ export default function Layout({ children, currentPageName }) {
         <div className="flex items-center h-11 px-6 text-sm">
           <Link
             to={createPageUrl("Home")}
-            className="text-primary font-semibold tracking-widest hover:opacity-80 transition-opacity mr-8"
+            className="font-pixel text-primary hover:opacity-80 transition-opacity mr-8 text-base"
           >
             MACRO.PICTURES
           </Link>
@@ -70,7 +70,7 @@ export default function Layout({ children, currentPageName }) {
       {/* Footer */}
       <footer className="border-t border-border/40 mt-20 py-8 px-6 bg-card">
         <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-muted-foreground tracking-wider">
-          <p>© {new Date().getFullYear()} GYROTAP — MACRO PHOTOGRAPHY</p>
+          <p><span className="font-pixel">GYROTAP</span> · © {new Date().getFullYear()} · Macro Photography</p>
           <div className="flex items-center gap-6">
             <Link to={createPageUrl("Gallery")} className="hover:text-primary transition-colors">Gallery</Link>
             <Link to={createPageUrl("About")} className="hover:text-primary transition-colors">About</Link>
