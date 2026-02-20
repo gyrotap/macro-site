@@ -1,10 +1,12 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import { optimizedUrl } from "@/utils/imageUrl";
 
 export default function PhotoLightbox({ photo, photos, onClose, onNavigate }) {
   const currentIndex = photos.findIndex((p) => p.id === photo.id);
+  // null = unknown, "portrait" | "landscape" | "square"
+  const [orientation, setOrientation] = useState(null);
 
   const goNext = (e) => {
     e?.stopPropagation();
@@ -15,6 +17,11 @@ export default function PhotoLightbox({ photo, photos, onClose, onNavigate }) {
     e?.stopPropagation();
     if (currentIndex > 0) onNavigate(photos[currentIndex - 1]);
   };
+
+  // Reset orientation whenever photo changes
+  useEffect(() => {
+    setOrientation(null);
+  }, [photo.id]);
 
   useEffect(() => {
     const handleKey = (e) => {
@@ -30,6 +37,22 @@ export default function PhotoLightbox({ photo, photos, onClose, onNavigate }) {
     };
   }, [currentIndex]);
 
+  // Detect orientation from natural image dimensions
+  const handleImageLoad = (e) => {
+    const { naturalWidth, naturalHeight } = e.target;
+    const ratio = naturalWidth / naturalHeight;
+    if (ratio < 0.85) setOrientation("portrait");
+    else if (ratio > 1.15) setOrientation("landscape");
+    else setOrientation("square");
+  };
+
+  // Window max-width based on orientation
+  const windowClass = orientation === "portrait"
+    ? "max-w-xl"       // narrow for tall images
+    : orientation === "square"
+    ? "max-w-2xl"
+    : "max-w-5xl";     // wide for landscape
+
   return (
     <AnimatePresence>
       <motion.div
@@ -39,9 +62,12 @@ export default function PhotoLightbox({ photo, photos, onClose, onNavigate }) {
         className="fixed inset-0 z-50 bg-background/95 backdrop-blur-sm flex flex-col pt-11"
         onClick={onClose}
       >
-        <div className="flex-1 flex flex-col p-4 md:p-8 min-h-0" onClick={(e) => e.stopPropagation()}>
-          {/* Neumorphic window */}
-          <div className="flex-1 flex flex-col neu-raised rounded-lg overflow-hidden min-h-0">
+        <div className="flex-1 flex flex-col items-center p-4 md:p-8 min-h-0" onClick={(e) => e.stopPropagation()}>
+          {/* Neumorphic window — width adapts to image orientation */}
+          <motion.div
+            layout
+            className={`w-full ${windowClass} flex-1 flex flex-col neu-raised rounded-lg overflow-hidden min-h-0 transition-all duration-300`}
+          >
             {/* Header */}
             <div className="flex-shrink-0 bg-card border-b border-border/40 px-5 py-2.5 flex items-center gap-3 justify-between">
               <span className="font-pixel text-xs text-muted-foreground flex-shrink-0">VIEWER</span>
@@ -62,9 +88,9 @@ export default function PhotoLightbox({ photo, photos, onClose, onNavigate }) {
               {currentIndex > 0 && (
                 <button
                   onClick={goPrev}
-                  className="absolute left-4 z-10 w-10 h-10 neu-btn rounded flex items-center justify-center text-muted-foreground hover:text-primary transition-colors"
+                  className="absolute left-3 z-10 w-9 h-9 neu-btn rounded flex items-center justify-center text-muted-foreground hover:text-primary transition-colors"
                 >
-                  <ChevronLeft className="w-5 h-5" />
+                  <ChevronLeft className="w-4 h-4" />
                 </button>
               )}
 
@@ -75,6 +101,7 @@ export default function PhotoLightbox({ photo, photos, onClose, onNavigate }) {
                 transition={{ duration: 0.2 }}
                 src={optimizedUrl(photo.image_url)}
                 alt={photo.title}
+                onLoad={handleImageLoad}
                 className="max-h-full max-w-full object-contain rounded"
                 style={{ display: "block" }}
               />
@@ -82,9 +109,9 @@ export default function PhotoLightbox({ photo, photos, onClose, onNavigate }) {
               {currentIndex < photos.length - 1 && (
                 <button
                   onClick={goNext}
-                  className="absolute right-4 z-10 w-10 h-10 neu-btn rounded flex items-center justify-center text-muted-foreground hover:text-primary transition-colors"
+                  className="absolute right-3 z-10 w-9 h-9 neu-btn rounded flex items-center justify-center text-muted-foreground hover:text-primary transition-colors"
                 >
-                  <ChevronRight className="w-5 h-5" />
+                  <ChevronRight className="w-4 h-4" />
                 </button>
               )}
             </div>
@@ -103,7 +130,7 @@ export default function PhotoLightbox({ photo, photos, onClose, onNavigate }) {
                 {photo.iso && <span>ISO {photo.iso}</span>}
               </div>
             </div>
-          </div>
+          </motion.div>
         </div>
       </motion.div>
     </AnimatePresence>

@@ -132,10 +132,10 @@ export default function Admin() {
         const originalHeight = img.height;
         const megapixels = ((originalWidth * originalHeight) / 1000000).toFixed(1);
 
-        // Calculate new dimensions (max 2500px on longest side)
+        // Calculate new dimensions (max 3500px on longest side)
         let width = img.width;
         let height = img.height;
-        const maxDimension = 2500;
+        const maxDimension = 3500;
 
         if (width > maxDimension || height > maxDimension) {
           if (width > height) {
@@ -154,7 +154,7 @@ export default function Admin() {
         const ctx = canvas.getContext('2d');
         ctx.drawImage(img, 0, 0, width, height);
 
-        // Convert to WebP at 85% quality
+        // Convert to WebP at 93% quality — high fidelity for macro detail
         canvas.toBlob(
           (blob) => {
             if (blob) {
@@ -175,7 +175,7 @@ export default function Admin() {
             }
           },
           'image/webp',
-          0.85
+          0.93
         );
       };
 
@@ -253,7 +253,7 @@ export default function Admin() {
         const originalSize = (selectedFile.size / 1024 / 1024).toFixed(2);
         setMessage({
           type: "success",
-          text: `Image optimized: ${originalSize}MB → ${fileSizeMB}MB (WebP, ${result.originalWidth}×${result.originalHeight}, ${result.megapixels}MP)`
+          text: `Image optimized: ${originalSize}MB → ${fileSizeMB}MB (WebP 93%, ${result.originalWidth}×${result.originalHeight}, ${result.megapixels}MP)`
         });
       } catch (error) {
         setMessage({ type: "error", text: `Optimization failed: ${error.message}` });
