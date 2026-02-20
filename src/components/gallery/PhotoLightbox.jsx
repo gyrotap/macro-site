@@ -36,7 +36,7 @@ export default function PhotoLightbox({ photo, photos, onClose, onNavigate }) {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="fixed inset-0 z-50 bg-background/95 backdrop-blur-sm flex flex-col"
+        className="fixed inset-0 z-50 bg-background/95 backdrop-blur-sm flex flex-col pt-11"
         onClick={onClose}
       >
         <div className="flex-1 flex flex-col p-4 md:p-8 min-h-0" onClick={(e) => e.stopPropagation()}>

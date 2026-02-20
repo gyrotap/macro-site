@@ -2,7 +2,6 @@ import React, { useEffect, useRef } from 'react';
 
 export default function HalftoneBackground() {
   const canvasRef = useRef(null);
-  const mousePos = useRef({ x: 0, y: 0 });
   const animationFrameId = useRef(null);
 
   useEffect(() => {
@@ -12,7 +11,6 @@ export default function HalftoneBackground() {
     const ctx = canvas.getContext('2d');
     let time = 0;
 
-    // Set canvas size
     const resizeCanvas = () => {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
@@ -20,81 +18,37 @@ export default function HalftoneBackground() {
     resizeCanvas();
     window.addEventListener('resize', resizeCanvas);
 
-    // Track mouse/touch position
-    const handleMouseMove = (e) => {
-      mousePos.current = {
-        x: e.clientX / window.innerWidth,
-        y: e.clientY / window.innerHeight
-      };
-    };
+    // Dot grid parameters
+    const gridSize = 22;
+    const maxDotSize = 2.8;
 
-    const handleTouchMove = (e) => {
-      if (e.touches.length > 0) {
-        const touch = e.touches[0];
-        mousePos.current = {
-          x: touch.clientX / window.innerWidth,
-          y: touch.clientY / window.innerHeight
-        };
-      }
-    };
-
-    window.addEventListener('mousemove', handleMouseMove);
-    window.addEventListener('touchmove', handleTouchMove, { passive: true });
-
-    // Halftone dot parameters
-    const gridSize = 18; // Space between dots (smaller = more dots)
-    const maxDotSize = 3; // Maximum dot radius - subtle
-    const waveSpeed = 0.015;
-    const waveAmplitude = 0.2;
-    const gravityRadius = 250; // Pixels - how far the cursor gravity reaches
-    const gravityStrength = 40; // How much dots are pulled toward cursor
-
-    // Animation loop
+    // Two overlapping wave systems — different frequencies and directions
+    // creates a slow, organic interference pattern
     const animate = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      time += waveSpeed;
+      time += 0.008;
 
-      const mouseX = mousePos.current.x * canvas.width;
-      const mouseY = mousePos.current.y * canvas.height;
-
-      // Draw halftone dots
       for (let x = 0; x < canvas.width; x += gridSize) {
         for (let y = 0; y < canvas.height; y += gridSize) {
-          // Calculate pixel distance from mouse
-          const dx = x - mouseX;
-          const dy = y - mouseY;
-          const distance = Math.sqrt(dx * dx + dy * dy);
+          // Primary wave — diagonal
+          const wave1 = Math.sin(x * 0.012 + y * 0.008 + time);
+          // Secondary wave — counter-diagonal, slower
+          const wave2 = Math.sin(x * 0.006 - y * 0.010 + time * 0.7);
+          // Combine: interference between the two
+          const combined = (wave1 + wave2) * 0.5; // range -1 to 1
 
-          // Gravity well effect - exponential falloff like real gravity
-          const gravityFactor = Math.max(0, 1 - distance / gravityRadius);
-          const gravity = Math.pow(gravityFactor, 2); // Exponential for stronger effect
+          // Map to dot size: only show dots when combined is positive
+          const t = (combined + 1) / 2; // 0 to 1
+          const dotSize = maxDotSize * Math.pow(t, 1.6);
 
-          // Calculate displacement toward cursor (spacetime warping)
-          const displacementX = -dx * gravity * (gravityStrength / distance);
-          const displacementY = -dy * gravity * (gravityStrength / distance);
+          if (dotSize < 0.3) continue;
 
-          // Apply displacement to dot position
-          const warpedX = x + displacementX;
-          const warpedY = y + displacementY;
-
-          // Wave effect based on position and time (subtle background animation)
-          const wave = Math.sin(x * 0.008 + y * 0.008 + time) * waveAmplitude;
-
-          // Size scales subtly with gravity
-          const baseSize = 0.4 + wave;
-          const dotSize = maxDotSize * (baseSize + gravity * 0.7);
-
-          // Opacity increases subtly near cursor
-          const opacity = 0.06 + gravity * 0.15;
-
-          // DOS amber/orange color palette - gets brighter near cursor
-          const amberR = Math.floor(200 + gravity * 55);
-          const amberG = Math.floor(120 + gravity * 50);
-          const amberB = Math.floor(0 + gravity * 20);
-          ctx.fillStyle = `rgba(${amberR}, ${amberG}, ${amberB}, ${opacity})`;
+          // Sage green tinted dots — warm side stays muted
+          const opacity = 0.04 + t * 0.08;
+          ctx.fillStyle = `rgba(122, 158, 126, ${opacity})`;
 
           ctx.beginPath();
-          ctx.arc(warpedX, warpedY, Math.max(0.5, dotSize), 0, Math.PI * 2);
+          ctx.arc(x, y, dotSize, 0, Math.PI * 2);
           ctx.fill();
         }
       }
@@ -104,14 +58,9 @@ export default function HalftoneBackground() {
 
     animate();
 
-    // Cleanup
     return () => {
       window.removeEventListener('resize', resizeCanvas);
-      window.removeEventListener('mousemove', handleMouseMove);
-      window.removeEventListener('touchmove', handleTouchMove);
-      if (animationFrameId.current) {
-        cancelAnimationFrame(animationFrameId.current);
-      }
+      if (animationFrameId.current) cancelAnimationFrame(animationFrameId.current);
     };
   }, []);
 
@@ -119,7 +68,6 @@ export default function HalftoneBackground() {
     <canvas
       ref={canvasRef}
       className="fixed inset-0 pointer-events-none z-[5]"
-      style={{ mixBlendMode: 'screen' }}
     />
   );
 }

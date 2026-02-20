@@ -12,7 +12,7 @@ export default function Layout({ children, currentPageName }) {
   ];
 
   return (
-    <div className="min-h-screen bg-background text-foreground font-mono" style={{ fontFamily: "'JetBrains Mono', monospace" }}>
+    <div className="min-h-screen bg-background text-foreground" style={{ fontFamily: "'Geist Mono', monospace" }}>
       {/* Top nav — neumorphic raised bar */}
       <nav className="fixed top-0 left-0 right-0 z-40 bg-card neu-raised border-b border-border/40">
         <div className="flex items-center h-11 px-6 text-sm">
