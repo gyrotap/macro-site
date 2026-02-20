@@ -32,13 +32,14 @@ export default function Gallery() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5 }}
-            className="border border-border bg-background mb-8"
+            className="neu-raised rounded-lg overflow-hidden mb-8"
           >
-            <div className="window-titlebar bg-background border-b border-border px-4 py-2 text-sm cursor-grab active:cursor-grabbing">
-              <span className="text-primary">GALLERY.DIR - {photos.length} FILES</span>
+            <div className="window-titlebar bg-card border-b border-border/40 px-5 py-2.5 text-xs cursor-grab active:cursor-grabbing flex items-center gap-2">
+              <span className="w-2.5 h-2.5 rounded-full bg-primary/60 block" />
+              <span className="text-muted-foreground tracking-widest">GALLERY — {photos.length} images</span>
             </div>
-            <div className="bg-background p-6">
-              <h1 className="text-3xl mb-6 text-primary">COLLECTION</h1>
+            <div className="bg-card p-6">
+              <h1 className="text-2xl mb-5 text-foreground font-light tracking-wider">Collection</h1>
               {availableCategories.length > 0 && (
                 <CategoryFilter
                   active={activeCategory}
@@ -52,19 +53,14 @@ export default function Gallery() {
 
         {isLoading ? (
           <div className="flex items-center justify-center py-20">
-            <div className="text-sm flex items-center gap-2 text-primary">
+            <div className="text-sm flex items-center gap-2 text-muted-foreground">
               <Loader2 className="w-4 h-4 animate-spin" />
-              LOADING...
+              Loading...
             </div>
           </div>
         ) : filteredPhotos.length === 0 ? (
-          <div className="border border-border bg-background">
-            <div className="bg-background border-b border-border px-4 py-2 text-sm">
-              <span className="text-primary">ERROR.TXT</span>
-            </div>
-            <div className="bg-background p-12 text-center text-sm text-muted-foreground">
-              NO FILES FOUND
-            </div>
+          <div className="neu-raised rounded-lg p-12 text-center text-sm text-muted-foreground">
+            No images found
           </div>
         ) : (
           <PhotoGrid photos={filteredPhotos} columns={3} />

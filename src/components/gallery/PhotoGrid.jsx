@@ -34,8 +34,8 @@ export default function PhotoGrid({ photos, columns = 3 }) {
                 onMouseEnter={() => setHoveredId(photo.id)}
                 onMouseLeave={() => setHoveredId(null)}
               >
-                <div className={`border border-border transition-all ${
-                  hoveredId === photo.id ? "border-primary" : ""
+                <div className={`rounded overflow-hidden transition-all duration-200 ${
+                  hoveredId === photo.id ? "neu-raised scale-[1.01]" : ""
                 }`}>
                   <img
                     src={optimizedUrl(photo.image_url)}

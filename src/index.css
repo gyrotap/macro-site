@@ -12,80 +12,33 @@
 
 @layer base {
   :root {
-    /* DOS amber/orange terminal palette */
-    --background: 0 0% 0%;
-    --foreground: 39 100% 65%;
-    --card: 0 0% 5%;
-    --card-foreground: 39 100% 65%;
-    --popover: 0 0% 0%;
-    --popover-foreground: 39 100% 65%;
-    --primary: 39 100% 60%;
-    --primary-foreground: 0 0% 0%;
-    --secondary: 0 0% 8%;
-    --secondary-foreground: 39 100% 65%;
-    --muted: 0 0% 12%;
-    --muted-foreground: 39 70% 45%;
-    --accent: 30 100% 55%;
-    --accent-foreground: 0 0% 0%;
-    --destructive: 0 70% 50%;
-    --destructive-foreground: 39 100% 65%;
-    --border: 39 80% 35%;
-    --input: 0 0% 10%;
-    --ring: 39 100% 60%;
-    --chart-1: 39 100% 60%;
-    --chart-2: 35 95% 58%;
-    --chart-3: 42 90% 55%;
-    --chart-4: 33 85% 52%;
-    --chart-5: 36 88% 56%;
-    --radius: 0rem;
-    --sidebar-background: 0 0% 5%;
-    --sidebar-foreground: 39 100% 65%;
-    --sidebar-primary: 39 100% 60%;
-    --sidebar-primary-foreground: 0 0% 0%;
-    --sidebar-accent: 0 0% 10%;
-    --sidebar-accent-foreground: 39 100% 65%;
-    --sidebar-border: 39 80% 35%;
-    --sidebar-ring: 39 100% 60%;
-  }
+    /* Warm dark + sage green palette */
+    --background: 30 8% 8%;          /* #141210 */
+    --foreground: 36 20% 90%;        /* #ede8e0 warm white */
+    --card: 28 8% 11%;               /* #1e1b18 */
+    --card-foreground: 36 20% 90%;
+    --popover: 30 8% 8%;
+    --popover-foreground: 36 20% 90%;
+    --primary: 132 14% 55%;          /* #7a9e7e sage green */
+    --primary-foreground: 30 8% 8%;
+    --secondary: 28 8% 14%;          /* slightly lighter surface */
+    --secondary-foreground: 36 20% 90%;
+    --muted: 28 6% 22%;              /* #38332e */
+    --muted-foreground: 30 8% 45%;   /* #5a5550 */
+    --accent: 132 14% 55%;           /* sage green */
+    --accent-foreground: 30 8% 8%;
+    --destructive: 0 60% 50%;
+    --destructive-foreground: 36 20% 90%;
+    --border: 30 8% 20%;             /* subtle warm border */
+    --input: 28 8% 13%;
+    --ring: 132 14% 55%;
+    --radius: 0.5rem;
 
-  .dark {
-    /* Dark mode uses same DOS palette */
-    --background: 0 0% 0%;
-    --foreground: 39 100% 65%;
-    --card: 0 0% 5%;
-    --card-foreground: 39 100% 65%;
-    --popover: 0 0% 0%;
-    --popover-foreground: 39 100% 65%;
-    --primary: 39 100% 60%;
-    --primary-foreground: 0 0% 0%;
-    --secondary: 0 0% 8%;
-    --secondary-foreground: 39 100% 65%;
-    --muted: 0 0% 12%;
-    --muted-foreground: 39 70% 45%;
-    --accent: 30 100% 55%;
-    --accent-foreground: 0 0% 0%;
-    --destructive: 0 70% 50%;
-    --destructive-foreground: 39 100% 65%;
-    --border: 39 80% 35%;
-    --input: 0 0% 10%;
-    --ring: 39 100% 60%;
-    --chart-1: 39 100% 60%;
-    --chart-2: 35 95% 58%;
-    --chart-3: 42 90% 55%;
-    --chart-4: 33 85% 52%;
-    --chart-5: 36 88% 56%;
-    --sidebar-background: 0 0% 5%;
-    --sidebar-foreground: 39 100% 65%;
-    --sidebar-primary: 39 100% 60%;
-    --sidebar-primary-foreground: 0 0% 0%;
-    --sidebar-accent: 0 0% 10%;
-    --sidebar-accent-foreground: 39 100% 65%;
-    --sidebar-border: 39 80% 35%;
-    --sidebar-ring: 39 100% 60%;
+    /* Neumorphism shadow values for warm dark surface */
+    --neu-light: 28 10% 16%;         /* lighter shadow side */
+    --neu-dark: 30 10% 5%;           /* darker shadow side */
   }
 }
-
-
 
 @layer base {
   * {
@@ -94,46 +47,68 @@
 
   body {
     @apply bg-background text-foreground;
-    /* Default cursor */
     cursor: default;
-    /* Subtle amber glow effect on text */
-    text-shadow: 0 0 3px rgba(255, 170, 0, 0.4);
   }
 
-  /* Clickable elements get pointer cursor */
   a, button, [role="button"], input[type="submit"], input[type="button"] {
     cursor: pointer;
   }
 
-  /* Text inputs get text cursor */
   input[type="text"], input[type="email"], input[type="password"], textarea {
     cursor: text;
   }
 }
 
 @layer components {
-  /* Terminal border styling - simple, DOS-like */
-  .terminal-border {
-    /* Minimal border, no fancy effects */
+  /* Neumorphic raised surface — used on panels/windows */
+  .neu-raised {
+    background: hsl(var(--card));
+    box-shadow:
+      4px 4px 10px hsl(var(--neu-dark)),
+      -4px -4px 10px hsl(var(--neu-light));
   }
 
-  /* Terminal-style scrollbar */
+  /* Neumorphic inset — used on inputs/pressed states */
+  .neu-inset {
+    background: hsl(var(--card));
+    box-shadow:
+      inset 3px 3px 7px hsl(var(--neu-dark)),
+      inset -3px -3px 7px hsl(var(--neu-light));
+  }
+
+  /* Neumorphic button */
+  .neu-btn {
+    background: hsl(var(--card));
+    box-shadow:
+      3px 3px 7px hsl(var(--neu-dark)),
+      -3px -3px 7px hsl(var(--neu-light));
+    transition: box-shadow 0.15s ease, transform 0.1s ease;
+  }
+  .neu-btn:hover {
+    box-shadow:
+      4px 4px 10px hsl(var(--neu-dark)),
+      -4px -4px 10px hsl(var(--neu-light));
+  }
+  .neu-btn:active {
+    box-shadow:
+      inset 2px 2px 5px hsl(var(--neu-dark)),
+      inset -2px -2px 5px hsl(var(--neu-light));
+    transform: translateY(1px);
+  }
+
+  /* Scrollbar */
   *::-webkit-scrollbar {
-    width: 12px;
+    width: 8px;
     background: hsl(var(--background));
   }
-
   *::-webkit-scrollbar-track {
-    background: hsl(var(--secondary));
-    border-left: 1px solid hsl(var(--border));
+    background: hsl(var(--background));
   }
-
   *::-webkit-scrollbar-thumb {
-    background: hsl(var(--primary));
-    border: 1px solid hsl(var(--background));
+    background: hsl(var(--muted));
+    border-radius: 4px;
   }
-
   *::-webkit-scrollbar-thumb:hover {
-    background: hsl(var(--accent));
+    background: hsl(var(--primary));
   }
 }

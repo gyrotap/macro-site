@@ -1,17 +1,17 @@
 import React from "react";
 
 const categories = [
-  { value: "all", label: "ALL" },
-  { value: "insects", label: "INSECTS" },
-  { value: "arachnids", label: "ARACHNIDS" },
-  { value: "plants", label: "PLANTS" },
-  { value: "flowers", label: "FLOWERS" },
-  { value: "fungi", label: "FUNGI" },
-  { value: "minerals", label: "MINERALS" },
-  { value: "water_drops", label: "WATER DROPS" },
-  { value: "textures", label: "TEXTURES" },
-  { value: "eyes", label: "EYES" },
-  { value: "scales", label: "SCALES" },
+  { value: "all", label: "All" },
+  { value: "insects", label: "Insects" },
+  { value: "arachnids", label: "Arachnids" },
+  { value: "plants", label: "Plants" },
+  { value: "flowers", label: "Flowers" },
+  { value: "fungi", label: "Fungi" },
+  { value: "minerals", label: "Minerals" },
+  { value: "water_drops", label: "Water Drops" },
+  { value: "textures", label: "Textures" },
+  { value: "eyes", label: "Eyes" },
+  { value: "scales", label: "Scales" },
 ];
 
 export default function CategoryFilter({ active, onChange, availableCategories }) {
@@ -25,10 +25,10 @@ export default function CategoryFilter({ active, onChange, availableCategories }
         <button
           key={cat.value}
           onClick={() => onChange(cat.value)}
-          className={`px-4 py-2 text-sm border border-border transition-all ${
+          className={`px-4 py-1.5 text-xs tracking-wider rounded transition-all ${
             active === cat.value
-              ? "bg-background text-primary border-primary"
-              : "bg-background text-foreground hover:text-primary hover:border-primary"
+              ? "neu-inset text-primary"
+              : "neu-btn text-muted-foreground hover:text-foreground"
           }`}
         >
           {cat.label}

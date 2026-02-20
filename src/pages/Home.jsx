@@ -1,9 +1,8 @@
-// src/pages/Home.jsx
-
 import React from "react";
 import { photoService } from "@/services/photoService";
 import { useQuery } from "@tanstack/react-query";
 import HeroSection from "../components/home/HeroSection";
+import FeaturedGrid from "../components/home/FeaturedGrid";
 import HalftoneBackground from "@/components/HalftoneBackground";
 
 const Home = () => {
@@ -12,14 +11,18 @@ const Home = () => {
     queryFn: () => photoService.getFeaturedPhotos(20),
   });
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading) return (
+    <div className="min-h-screen flex items-center justify-center text-muted-foreground text-sm tracking-widest">
+      Loading...
+    </div>
+  );
 
   return (
     <div className="relative">
       <HalftoneBackground />
       <div className="relative z-10">
         <HeroSection featuredPhoto={photos[0]} />
-        {/* Render photos or other components here */}
+        <FeaturedGrid photos={photos} />
       </div>
     </div>
   );

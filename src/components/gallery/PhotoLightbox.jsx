@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import { optimizedUrl } from "@/utils/imageUrl";
 
 export default function PhotoLightbox({ photo, photos, onClose, onNavigate }) {
@@ -36,31 +36,32 @@ export default function PhotoLightbox({ photo, photos, onClose, onNavigate }) {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="fixed inset-0 z-50 bg-background flex flex-col"
+        className="fixed inset-0 z-50 bg-background/95 backdrop-blur-sm flex flex-col"
         onClick={onClose}
       >
-        {/* Terminal window frame */}
         <div className="flex-1 flex flex-col p-4 md:p-8 min-h-0" onClick={(e) => e.stopPropagation()}>
-          <div className="flex-1 flex flex-col border border-border bg-background min-h-0">
-            {/* Terminal header */}
-            <div className="flex-shrink-0 bg-background border-b border-border px-4 py-2 flex items-center justify-between">
-              <div className="text-sm flex-1 text-primary truncate pr-4">
-                <em>{photo.title}</em> — {currentIndex + 1}/{photos.length}
+          {/* Neumorphic window */}
+          <div className="flex-1 flex flex-col neu-raised rounded-lg overflow-hidden min-h-0">
+            {/* Header */}
+            <div className="flex-shrink-0 bg-card border-b border-border/40 px-5 py-2.5 flex items-center justify-between">
+              <div className="text-sm flex-1 text-foreground truncate pr-4">
+                <em className="text-primary">{photo.title}</em>
+                <span className="text-muted-foreground ml-2 text-xs">— {currentIndex + 1}/{photos.length}</span>
               </div>
               <button
                 onClick={onClose}
-                className="flex-shrink-0 w-6 h-6 border border-border bg-background flex items-center justify-center hover:text-primary text-base transition-colors"
+                className="flex-shrink-0 w-7 h-7 neu-btn rounded flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors"
               >
-                ×
+                <X className="w-3.5 h-3.5" />
               </button>
             </div>
 
-            {/* Content area — fills remaining space, image contained within */}
-            <div className="flex-1 bg-background relative flex items-center justify-center p-4 min-h-0 overflow-hidden">
+            {/* Image area */}
+            <div className="flex-1 bg-card relative flex items-center justify-center p-4 min-h-0 overflow-hidden">
               {currentIndex > 0 && (
                 <button
                   onClick={goPrev}
-                  className="absolute left-4 z-10 w-10 h-10 bg-background border border-border hover:text-primary hover:border-primary flex items-center justify-center transition-colors text-primary"
+                  className="absolute left-4 z-10 w-10 h-10 neu-btn rounded flex items-center justify-center text-muted-foreground hover:text-primary transition-colors"
                 >
                   <ChevronLeft className="w-5 h-5" />
                 </button>
@@ -73,32 +74,32 @@ export default function PhotoLightbox({ photo, photos, onClose, onNavigate }) {
                 transition={{ duration: 0.2 }}
                 src={optimizedUrl(photo.image_url)}
                 alt={photo.title}
-                className="max-h-full max-w-full object-contain border border-border"
-                style={{ imageRendering: "auto", display: "block" }}
+                className="max-h-full max-w-full object-contain rounded"
+                style={{ display: "block" }}
               />
 
               {currentIndex < photos.length - 1 && (
                 <button
                   onClick={goNext}
-                  className="absolute right-4 z-10 w-10 h-10 bg-background border border-border hover:text-primary hover:border-primary flex items-center justify-center transition-colors text-primary"
+                  className="absolute right-4 z-10 w-10 h-10 neu-btn rounded flex items-center justify-center text-muted-foreground hover:text-primary transition-colors"
                 >
                   <ChevronRight className="w-5 h-5" />
                 </button>
               )}
             </div>
 
-            {/* Terminal info footer */}
-            <div className="flex-shrink-0 bg-background border-t border-border px-4 py-2">
-              <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm">
-                {photo.subject && <span className="text-primary">SUBJECT: {photo.subject}</span>}
-                {photo.magnification && <span className="text-primary">MAG: {photo.magnification}</span>}
-                {photo.category && <span className="text-primary">TYPE: {photo.category.toUpperCase().replace(/_/g, " ")}</span>}
-                {photo.camera && <span className="text-primary">CAM: {photo.camera}</span>}
-                {photo.lens && <span className="text-primary">LENS: {photo.lens}</span>}
-                {photo.focal_length && <span className="text-primary">{photo.focal_length}</span>}
-                {photo.aperture && <span className="text-primary">{photo.aperture}</span>}
-                {photo.shutter_speed && <span className="text-primary">{photo.shutter_speed}</span>}
-                {photo.iso && <span className="text-primary">ISO {photo.iso}</span>}
+            {/* Metadata footer */}
+            <div className="flex-shrink-0 bg-card border-t border-border/40 px-5 py-3">
+              <div className="flex flex-wrap gap-x-5 gap-y-1 text-xs text-muted-foreground">
+                {photo.subject && <span><span className="text-foreground/40 mr-1">Subject</span>{photo.subject}</span>}
+                {photo.magnification && <span><span className="text-foreground/40 mr-1">Mag</span>{photo.magnification}</span>}
+                {photo.category && <span><span className="text-foreground/40 mr-1">Type</span>{photo.category.replace(/_/g, " ")}</span>}
+                {photo.camera && <span><span className="text-foreground/40 mr-1">Camera</span>{photo.camera}</span>}
+                {photo.lens && <span><span className="text-foreground/40 mr-1">Lens</span>{photo.lens}</span>}
+                {photo.focal_length && <span>{photo.focal_length}</span>}
+                {photo.aperture && <span>{photo.aperture}</span>}
+                {photo.shutter_speed && <span>{photo.shutter_speed}</span>}
+                {photo.iso && <span>ISO {photo.iso}</span>}
               </div>
             </div>
           </div>
