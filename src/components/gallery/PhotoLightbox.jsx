@@ -117,13 +117,13 @@ export default function PhotoLightbox({ photo, photos, onClose, onNavigate }) {
             </div>
 
             {/* Metadata footer */}
-            <div className="flex-shrink-0 bg-card border-t border-border/40 px-5 py-3">
-              <div className="flex flex-wrap gap-x-5 gap-y-1 text-xs text-muted-foreground">
-                {photo.subject && <span><span className="text-foreground/40 mr-1">Subject</span>{photo.subject}</span>}
-                {photo.magnification && <span><span className="text-foreground/40 mr-1">Mag</span>{photo.magnification}</span>}
-                {photo.category && <span><span className="text-foreground/40 mr-1">Type</span>{photo.category.replace(/_/g, " ")}</span>}
-                {photo.camera && <span><span className="text-foreground/40 mr-1">Camera</span>{photo.camera}</span>}
-                {photo.lens && <span><span className="text-foreground/40 mr-1">Lens</span>{photo.lens}</span>}
+            <div className="flex-shrink-0 bg-card border-t border-border/40 px-5 py-4">
+              <div className="flex flex-wrap gap-x-6 gap-y-2 text-sm italic text-foreground/70">
+                {photo.subject && <span>{photo.subject}</span>}
+                {photo.magnification && <span>{photo.magnification}</span>}
+                {photo.category && <span>{photo.category.replace(/_/g, " ")}</span>}
+                {photo.camera && <span>{photo.camera}</span>}
+                {photo.lens && <span>{photo.lens}</span>}
                 {photo.focal_length && <span>{photo.focal_length}</span>}
                 {photo.aperture && <span>{photo.aperture}</span>}
                 {photo.shutter_speed && <span>{photo.shutter_speed}</span>}
